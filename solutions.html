@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Отраслевые решения — ИТЦ РоботТех</title>
+<meta name="description" content="Типовые и кастомные робототехнические ячейки: сварка, паллетирование, фрезеровка и обработка, коллаборативные роботы.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .hero-page { padding-top: var(--space-2xl); overflow: hidden; position: relative; }
+  .hero-page-subtitle { font-size: var(--fs-lg); max-width: 640px; color: var(--color-text-secondary); }
+
+  .filter-tabs { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+  .filter-tab {
+    padding: 0.65rem 1.25rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .filter-tab:hover { color: var(--color-text-primary); border-color: var(--color-border-accent); }
+  .filter-tab.is-active { background: var(--color-accent); border-color: var(--color-accent); color: #0f1115; }
+
+  .solution-card { display: flex; flex-direction: column; }
+  .solution-card.is-hidden { display: none; }
+  .spec-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+  .spec-table th, .spec-table td { text-align: left; padding: 0.45rem 0; border-bottom: 1px solid var(--color-border); }
+  .spec-table th { font-weight: 500; color: var(--color-text-secondary); width: 55%; }
+  .spec-table td { font-family: var(--font-heading); color: var(--color-text-primary); text-align: right; }
+  .spec-table tr:last-child th, .spec-table tr:last-child td { border-bottom: none; }
+  .industries { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .solution-card .btn-block { margin-top: auto; }
+
+  .timeline { position: relative; max-width: 780px; margin-inline: auto; padding-left: 3.5rem; }
+  .timeline::before { content: ''; position: absolute; left: 1.15rem; top: 0.5rem; bottom: 0.5rem; width: 1px; background: var(--color-border-strong); }
+  .timeline-item { position: relative; padding-bottom: var(--space-xl); }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-marker {
+    position: absolute; left: -3.5rem; top: 0; width: 2.3rem; height: 2.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-heading); font-size: var(--fs-xs); font-weight: 700;
+    color: var(--color-accent); background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-accent); border-radius: 50%;
+  }
+
+  .nav-cta-mobile { display: none; }
+  .burger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 32px; height: 32px; padding: 0; }
+  .burger span { display: block; width: 100%; height: 2px; background: var(--color-text-primary); border-radius: 2px; transition: transform var(--transition-fast), opacity var(--transition-fast); }
+  .burger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.is-active span:nth-child(2) { opacity: 0; }
+  .burger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  @media (max-width: 768px) {
+    .burger { display: flex; }
+    .nav-cta-desktop { display: none; }
+    .nav-cta-mobile { display: inline-flex; margin-top: var(--space-md); }
+    .timeline { padding-left: 3rem; }
+    .timeline-marker { left: -3rem; width: 2rem; height: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo" style="display:flex; align-items:center; gap:10px;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 38px; width: auto;"></a>
+
+    <nav id="nav-links" class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="solutions.html" class="active">Решения</a>
+      <a href="services.html">Услуги</a>
+      <a href="cases.html">Кейсы</a>
+      <a href="calculator.html">Калькулятор ROI</a>
+      <a href="contacts.html">Контакты</a>
+      <a href="contacts.html#wizard" class="btn btn-primary btn-sm nav-cta-mobile">Опросный лист</a>
+    </nav>
+
+    <div class="flex items-center gap-md">
+      <a href="contacts.html#wizard" class="btn btn-primary btn-sm nav-cta-desktop">Опросный лист</a>
+      <button id="burger" class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero-page bg-grid section-sm">
+    <div class="glow-orb" style="width:460px;height:460px;top:-140px;left:-120px;"></div>
+    <div class="container">
+      <div class="reveal is-visible">
+        <span class="eyebrow">Каталог решений</span>
+        <h1 class="mt-md">Типовые и кастомные<br>робототехнические ячейки</h1>
+        <p class="hero-page-subtitle mt-md">
+          Готовые конфигурации РТК под задачи сварки, паллетирования, механообработки и сборки с адаптацией под ваш техпроцесс.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm filter-section">
+    <div class="container">
+      <div class="filter-tabs reveal is-visible">
+        <button class="filter-tab is-active" data-filter="all">Все</button>
+        <button class="filter-tab" data-filter="welding">Сварка</button>
+        <button class="filter-tab" data-filter="palletizing">Паллетирование</button>
+        <button class="filter-tab" data-filter="machining">Фрезеровка и обработка</button>
+        <button class="filter-tab" data-filter="cobots">Коллаборативные роботы</button>
+      </div>
+
+      <div class="grid grid-3 solutions-grid mt-xl reveal-stagger is-visible">
+        <!-- 1. Сварка -->
+        <article class="card solution-card" data-category="welding">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><path d="M4 20l6-6M14 10l6-6M8 16l-1.5 4.5L11 19l-3-3zM14 10l2 2M9 15l2 2M15 4l5 5-2 2-5-5z"/></svg>
+          </div>
+          <h3 class="card-title mb-sm">РТК Лазерной сварки RT-Weld 500</h3>
+          <p class="card-text mb-md">Лазерная сварка тонкостенных конструкций с лазерным слежением за стыком.</p>
+          <table class="spec-table mb-md">
+            <tbody>
+              <tr><th>Грузоподъёмность</th><td>20 кг</td></tr>
+              <tr><th>Радиус зоны</th><td>2000 мм</td></tr>
+              <tr><th>Скорость</th><td>до 2 м/с</td></tr>
+              <tr><th>Повторяемость</th><td>± 0.03 мм</td></tr>
+            </tbody>
+          </table>
+          <div class="industries mb-md">
+            <span class="badge badge--neutral">Автопром</span>
+            <span class="badge badge--neutral">Металлоконструкции</span>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Запросить спецификацию</a>
+        </article>
+
+        <!-- 2. Сварка -->
+        <article class="card solution-card" data-category="welding">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><path d="M4 20l6-6M14 10l6-6M8 16l-1.5 4.5L11 19l-3-3zM14 10l2 2M9 15l2 2M15 4l5 5-2 2-5-5z"/></svg>
+          </div>
+          <h3 class="card-title mb-sm">РТК Дуговой сварки RT-Weld 900 Duo</h3>
+          <p class="card-text mb-md">Двухпостовая ячейка с позиционером для сварки рамных конструкций и труб.</p>
+          <table class="spec-table mb-md">
+            <tbody>
+              <tr><th>Грузоподъёмность</th><td>50 кг</td></tr>
+              <tr><th>Радиус зоны</th><td>2800 мм</td></tr>
+              <tr><th>Позиционер</th><td>до 2000 кг</td></tr>
+            </tbody>
+          </table>
+          <div class="industries mb-md">
+            <span class="badge badge--neutral">Трубная пром.</span>
+            <span class="badge badge--neutral">Металлоконструкции</span>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Запросить спецификацию</a>
+        </article>
+
+        <!-- 3. Паллетирование -->
+        <article class="card solution-card" data-category="palletizing">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><rect x="3" y="13" width="7" height="7"/><rect x="14" y="13" width="7" height="7"/><rect x="8.5" y="4" width="7" height="7"/></svg>
+          </div>
+          <h3 class="card-title mb-sm">РТК Паллетирования RT-Pack 250</h3>
+          <p class="card-text mb-md">Укладка коробов и мешков на паллеты со скоростью до 1800 циклов/час.</p>
+          <table class="spec-table mb-md">
+            <tbody>
+              <tr><th>Грузоподъёмность</th><td>250 кг</td></tr>
+              <tr><th>Радиус зоны</th><td>3195 мм</td></tr>
+              <tr><th>Высота укладки</th><td>до 2400 мм</td></tr>
+            </tbody>
+          </table>
+          <div class="industries mb-md">
+            <span class="badge badge--neutral">Пищевая пром.</span>
+            <span class="badge badge--neutral">Стройматериалы</span>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Запросить спецификацию</a>
+        </article>
+
+        <!-- 4. Механообработка -->
+        <article class="card solution-card" data-category="machining">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1.04 1.56V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1.04-1.56 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.56-1.04H3a2 2 0 110-4h.09a1.7 1.7 0 001.56-1.04 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001.04-1.56V3a2 2 0 114 0v.09a1.7 1.7 0 001.04 1.56 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9a1.7 1.7 0 001.56 1.04H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.56 1.04z"/></svg>
+          </div>
+          <h3 class="card-title mb-sm">РТК Механообработки RT-Mill 400</h3>
+          <p class="card-text mb-md">Обслуживание фрезерных и токарных ЧПУ станков, зачистка заусенцев.</p>
+          <table class="spec-table mb-md">
+            <tbody>
+              <tr><th>Грузоподъёмность</th><td>35 кг</td></tr>
+              <tr><th>Радиус зоны</th><td>1900 мм</td></tr>
+              <tr><th>Повторяемость</th><td>± 0.02 мм</td></tr>
+            </tbody>
+          </table>
+          <div class="industries mb-md">
+            <span class="badge badge--neutral">Автопром</span>
+            <span class="badge badge--neutral">Станкостроение</span>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Запросить спецификацию</a>
+        </article>
+
+        <!-- 5. Коботы -->
+        <article class="card solution-card" data-category="cobots">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+          </div>
+          <h3 class="card-title mb-sm">Кобот-ячейка RT-Cobot 10 Assist</h3>
+          <p class="card-text mb-md">Совместная безопасная работа с человеком без защитных заборов.</p>
+          <table class="spec-table mb-md">
+            <tbody>
+              <tr><th>Грузоподъёмность</th><td>10 кг</td></tr>
+              <tr><th>Радиус зоны</th><td>1300 мм</td></tr>
+              <tr><th>Ограждение</th><td>не требуется</td></tr>
+            </tbody>
+          </table>
+          <div class="industries mb-md">
+            <span class="badge badge--neutral">Электроника</span>
+            <span class="badge badge--neutral">Приборостроение</span>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Запросить спецификацию</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЭТАПЫ ИНТЕГРАЦИИ -->
+  <section class="section bg-surface">
+    <div class="container">
+      <div class="section-header section-header--center reveal is-visible">
+        <span class="eyebrow mx-auto">Как мы работаем</span>
+        <h2 class="mt-md">Этапы интеграции — от аудита до сдачи</h2>
+      </div>
+
+      <div class="timeline reveal-stagger is-visible">
+        <div class="timeline-item">
+          <div class="timeline-marker">01</div>
+          <div class="timeline-content">
+            <h4>Аудит производства</h4>
+            <p class="text-secondary">Инженер выезжает на площадку, замеряет параметры и оценивает потенциал автоматизации.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">02</div>
+          <div class="timeline-content">
+            <h4>ТЗ и расчет ROI</h4>
+            <p class="text-secondary">Формируем спецификацию, подбираем манипулятор и рассчитываем срок окупаемости.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">03</div>
+          <div class="timeline-content">
+            <h4>Проектирование и оснастка</h4>
+            <p class="text-secondary">Разрабатываем 3D-модель ячейки, кондукторы, захваты и защитные ограждения.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker">04</div>
+          <div class="timeline-content">
+            <h4>Монтаж, ПНР и обучение</h4>
+            <p class="text-secondary">Монтируем комплекс, обучаем ваших наладчиков и подписываем акт ввода в эксплуатацию.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer bg-base" style="border-top: 1px solid var(--color-border); padding-block: var(--space-2xl);">
+  <div class="container">
+    <div class="grid grid-4 mb-xl">
+      <div>
+        <a href="index.html" class="nav-logo" style="display: inline-block;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 36px; width: auto;"></a>
+        <p class="text-secondary mt-sm" style="font-size:var(--fs-sm);">
+          Проектирование и ввод в эксплуатацию промышленных робототехнических комплексов.
+        </p>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Разделы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="index.html" class="text-secondary">Главная</a></li>
+          <li class="mb-xs"><a href="solutions.html" class="text-secondary">Отраслевые решения</a></li>
+          <li class="mb-xs"><a href="services.html" class="text-secondary">Услуги</a></li>
+          <li class="mb-xs"><a href="cases.html" class="text-secondary">Кейсы внедрений</a></li>
+          <li class="mb-xs"><a href="calculator.html" class="text-secondary">Калькулятор ROI</a></li>
+          <li class="mb-xs"><a href="contacts.html" class="text-secondary">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Контакты</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="tel:+78001009885" class="text-secondary">+7 (800) 100-98-85</a></li>
+          <li class="mb-xs"><a href="mailto:info@itcrobot.ru" class="text-secondary">info@itcrobot.ru</a></li>
+          <li class="text-secondary">МО, г.Видное, Белокаменное шоссе, 1к1</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Документы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="#" class="text-secondary">Политика конфиденциальности</a></li>
+          <li class="text-secondary">ООО «ИТЦ РоботТех»</li>
+        </ul>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="flex justify-between items-center flex-wrap gap-md mt-md">
+      <span class="text-muted" style="font-size:var(--fs-xs);">© 2026 ИТЦ РоботТех. Все права защищены.</span>
+      <span class="badge badge--success badge--live">Система онлайн</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var tabs = document.querySelectorAll('.filter-tab');
+    var cards = document.querySelectorAll('.solution-card');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var filter = tab.getAttribute('data-filter');
+        tabs.forEach(function (t) { t.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+        cards.forEach(function (card) {
+          var matches = filter === 'all' || card.getAttribute('data-category') === filter;
+          card.classList.toggle('is-hidden', !matches);
+        });
+      });
+    });
+
+    var burger = document.getElementById('burger');
+    var navLinks = document.getElementById('nav-links');
+    if (burger && navLinks) {
+      burger.addEventListener('click', function () {
+        navLinks.classList.toggle('is-open');
+        burger.classList.toggle('is-active');
+      });
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор окупаемости роботизации — ИТЦ РоботТех</title>
+  <meta name="description" content="Интерактивный расчет срока окупаемости (ROI), экономии фонда оплаты труда и окупаемости внедрения промышленных роботов.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .hero-page { padding-top: var(--space-2xl); position: relative; overflow: hidden; text-align: center; }
+    .hero-page-subtitle { font-size: var(--fs-lg); max-width: 720px; margin-inline: auto; color: var(--color-text-secondary); }
+
+    .calc-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: var(--space-xl);
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .calc-layout { grid-template-columns: 1fr; }
+    }
+
+    .cell-presets {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xs);
+      margin-bottom: var(--space-md);
+    }
+    .preset-btn {
+      background: var(--color-bg-base);
+      border: 1px solid var(--color-border-strong);
+      color: var(--color-text-secondary);
+      padding: 0.65rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition-fast);
+    }
+    .preset-btn:hover { border-color: var(--color-border-accent); color: var(--color-text-primary); }
+    .preset-btn.is-active {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #0f1115;
+      font-weight: 700;
+    }
+
+    .range-wrap {
+      margin-bottom: var(--space-lg);
+    }
+    .range-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: var(--fs-sm);
+      color: var(--color-text-primary);
+      font-weight: 500;
+    }
+    .range-val {
+      font-family: var(--font-heading);
+      color: var(--color-accent);
+      font-weight: 700;
+      background: var(--color-accent-dim);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-sm);
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--color-bg-elevated-2);
+      outline: none;
+      accent-color: var(--color-accent);
+      cursor: pointer;
+    }
+    .range-limits {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--fs-xs);
+      color: var(--color-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .results-card {
+      background: linear-gradient(160deg, var(--color-bg-elevated), var(--color-bg-base));
+      border: 1px solid var(--color-border-accent);
+      position: sticky;
+      top: 100px;
+    }
+    .roi-badge-box {
+      background: var(--color-accent-dim);
+      border: 1px solid var(--color-accent);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+    .roi-badge-val {
+      font-family: var(--font-heading);
+      font-size: var(--fs-4xl);
+      font-weight: 700;
+      color: var(--color-accent);
+      line-height: 1.1;
+      margin-top: 0.2rem;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    @media (max-width: 480px) {
+      .metrics-grid { grid-template-columns: 1fr; }
+    }
+    .metric-item {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+    }
+    .metric-val {
+      font-family: var(--font-heading);
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      color: var(--color-status-success);
+      margin-top: 0.2rem;
+    }
+
+    .nav-cta-mobile { display: none; }
+    .burger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 32px; height: 32px; padding: 0; }
+    .burger span { display: block; width: 100%; height: 2px; background: var(--color-text-primary); border-radius: 2px; transition: transform var(--transition-fast), opacity var(--transition-fast); }
+    .burger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .burger.is-active span:nth-child(2) { opacity: 0; }
+    .burger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 768px) {
+      .burger { display: flex; }
+      .nav-cta-desktop { display: none; }
+      .nav-cta-mobile { display: inline-flex; margin-top: var(--space-md); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo" style="display:flex; align-items:center; gap:10px;">
+  <img src="images/logo.png" alt="Название Компании" style="height: 38px; width: auto;"></a>
+
+    <nav id="nav-links" class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="solutions.html">Решения</a>
+      <a href="services.html">Услуги</a>
+      <a href="cases.html">Кейсы</a>
+      <a href="calculator.html" class="active">Калькулятор ROI</a>
+      <a href="contacts.html">Контакты</a>
+      <a href="contacts.html#wizard" class="btn btn-primary btn-sm nav-cta-mobile">Опросный лист</a>
+    </nav>
+
+    <div class="flex items-center gap-md">
+      <a href="contacts.html#wizard" class="btn btn-primary btn-sm nav-cta-desktop">Опросный лист</a>
+      <button id="burger" class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero-page bg-grid section-sm">
+    <div class="glow-orb" style="width:480px;height:480px;top:-160px;left:50%;transform:translateX(-50%);"></div>
+    <div class="container">
+      <div class="reveal is-visible">
+        <span class="eyebrow">Экономика автоматизации</span>
+        <h1 class="mt-md">Калькулятор окупаемости роботизации</h1>
+        <p class="hero-page-subtitle mt-md">
+          Оцените срок окупаемости комплекса и высвобождаемый фонд оплаты труда (с учетом страховых взносов и налогов).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALCULATOR SECTION -->
+  <section class="section-sm bg-surface">
+    <div class="container">
+      <div class="calc-layout">
+        
+        <!-- Controls -->
+        <div class="card">
+          <h3 class="card-title mb-lg">Параметры производственного участка</h3>
+
+          <div class="form-group mb-lg">
+            <label class="form-label">Типовые конфигурации ячеек:</label>
+            <div class="cell-presets">
+              <button type="button" class="preset-btn is-active" onclick="setPreset('weld', 6500000, this)">Сварка (6.5 млн ₽)</button>
+              <button type="button" class="preset-btn" onclick="setPreset('pallet', 8000000, this)">Паллетирование (8 млн ₽)</button>
+              <button type="button" class="preset-btn" onclick="setPreset('machine', 11000000, this)">Фрезеровка (11 млн ₽)</button>
+            </div>
+          </div>
+
+          <div class="range-wrap">
+            <div class="range-header">
+              <span>Стоимость РТК с оснасткой и ПНР:</span>
+              <span class="range-val" id="costVal">6 500 000 ₽</span>
+            </div>
+            <input type="range" id="robotCost" min="3000000" max="25000000" step="500000" value="6500000">
+            <div class="range-limits"><span>3 млн ₽</span><span>25 млн ₽</span></div>
+          </div>
+
+          <div class="range-wrap">
+            <div class="range-header">
+              <span>Сменность работы участка в сутки:</span>
+              <span class="range-val" id="shiftsVal">2 смены</span>
+            </div>
+            <input type="range" id="shifts" min="1" max="3" step="1" value="2">
+            <div class="range-limits"><span>1 смена</span><span>3 смены (24/7)</span></div>
+          </div>
+
+          <div class="range-wrap">
+            <div class="range-header">
+              <span>Сотрудников на посту в 1 смену:</span>
+              <span class="range-val" id="workersVal">2 чел.</span>
+            </div>
+            <input type="range" id="workers" min="1" max="6" step="1" value="2">
+            <div class="range-limits"><span>1 чел</span><span>6 чел</span></div>
+          </div>
+
+          <div class="range-wrap">
+            <div class="range-header">
+              <span>Средняя зарплата сотрудника на руки:</span>
+              <span class="range-val" id="wageVal">85 000 ₽</span>
+            </div>
+            <input type="range" id="wage" min="40000" max="200000" step="5000" value="85000">
+            <div class="range-limits"><span>40 000 ₽</span><span>200 000 ₽</span></div>
+          </div>
+        </div>
+
+        <!-- Output / Results -->
+        <div class="card results-card">
+          <h3 class="card-title mb-md">Результат экономического расчета</h3>
+
+          <div class="roi-badge-box">
+            <div class="text-secondary" style="font-size:var(--fs-sm);">Срок полной окупаемости комплекса (ROI):</div>
+            <div class="roi-badge-val" id="paybackMonths">11.4 мес.</div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <div class="text-muted" style="font-size:var(--fs-xs);">Высвобождаемых рабочих мест:</div>
+              <div class="metric-val" id="totalWorkersReplaced" style="color:var(--color-text-primary);">4 чел.</div>
+            </div>
+            <div class="metric-item">
+              <div class="text-muted" style="font-size:var(--fs-xs);">Экономия на ФОТ в месяц (+налоги):</div>
+              <div class="metric-val" id="monthlySavings">476 000 ₽</div>
+            </div>
+            <div class="metric-item">
+              <div class="text-muted" style="font-size:var(--fs-xs);">Чистая экономия ФОТ за 1 год:</div>
+              <div class="metric-val" id="annualSavings">5.71 млн ₽</div>
+            </div>
+            <div class="metric-item">
+              <div class="text-muted" style="font-size:var(--fs-xs);">Экономический эффект за 5 лет:</div>
+              <div class="metric-val" id="fiveYearGain">21.05 млн ₽</div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--color-border); padding-top:var(--space-md);">
+            <p class="text-secondary mb-sm" style="font-size:var(--fs-xs);">
+              Получите официальное технико-коммерческое предложение с детализированной сметой в PDF:
+            </p>
+            <form onsubmit="event.preventDefault(); alert('Спасибо! ТКП с расчетом отправлено на обработку инженеру.');" class="flex flex-col gap-xs">
+              <input type="text" class="form-control" placeholder="Название предприятия" required>
+              <input type="tel" class="form-control" placeholder="+7 (___) ___-__-__" required>
+              <button type="submit" class="btn btn-primary btn-block mt-xs">Скачать официальный расчет ТКП</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer bg-base" style="border-top: 1px solid var(--color-border); padding-block: var(--space-2xl);">
+  <div class="container">
+    <div class="grid grid-4 mb-xl">
+      <div>
+        <a href="index.html" class="nav-logo" style="display: inline-block;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 36px; width: auto;"></a>
+        <p class="text-secondary mt-sm" style="font-size:var(--fs-sm);">
+          Проектирование и ввод в эксплуатацию промышленных робототехнических комплексов.
+        </p>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Разделы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="index.html" class="text-secondary">Главная</a></li>
+          <li class="mb-xs"><a href="solutions.html" class="text-secondary">Отраслевые решения</a></li>
+          <li class="mb-xs"><a href="services.html" class="text-secondary">Услуги</a></li>
+          <li class="mb-xs"><a href="cases.html" class="text-secondary">Кейсы внедрений</a></li>
+          <li class="mb-xs"><a href="calculator.html" class="text-secondary">Калькулятор ROI</a></li>
+          <li class="mb-xs"><a href="contacts.html" class="text-secondary">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Контакты</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="tel:+78001009885" class="text-secondary">+7 (800) 100-98-85</a></li>
+          <li class="mb-xs"><a href="mailto:info@itcrobot.ru" class="text-secondary">info@itcrobot.ru</a></li>
+          <li class="text-secondary">МО, г.Видное, Белокаменное шоссе, 1к1</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Документы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="#" class="text-secondary">Политика конфиденциальности</a></li>
+          <li class="text-secondary">ООО «ИТЦ РоботТех»</li>
+        </ul>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="flex justify-between items-center flex-wrap gap-md mt-md">
+      <span class="text-muted" style="font-size:var(--fs-xs);">© 2026 ИТЦ РоботТех. Все права защищены.</span>
+      <span class="badge badge--success badge--live">Система онлайн</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var robotCostInput = document.getElementById('robotCost');
+    var shiftsInput = document.getElementById('shifts');
+    var workersInput = document.getElementById('workers');
+    var wageInput = document.getElementById('wage');
+
+    function formatRub(num) {
+      return new Intl.NumberFormat('ru-RU').format(Math.round(num)) + ' ₽';
+    }
+
+    function calculate() {
+      var cost = parseFloat(robotCostInput.value);
+      var shifts = parseInt(shiftsInput.value);
+      var workersPerShift = parseInt(workersInput.value);
+      var netWage = parseFloat(wageInput.value);
+
+      var totalWorkers = shifts * workersPerShift;
+      var grossEmployerCostPerWorker = netWage * 1.40;
+      var totalMonthlyFOT = totalWorkers * grossEmployerCostPerWorker;
+      var robotMonthlyOpCost = 25000;
+      var netMonthlySavings = totalMonthlyFOT - robotMonthlyOpCost;
+
+      var months = (cost / netMonthlySavings).toFixed(1);
+      var annual = netMonthlySavings * 12;
+      var fiveYears = (annual * 5) - cost;
+
+      document.getElementById('costVal').textContent = formatRub(cost);
+      document.getElementById('shiftsVal').textContent = shifts + (shifts === 1 ? ' смена' : ' смены');
+      document.getElementById('workersVal').textContent = workersPerShift + ' чел.';
+      document.getElementById('wageVal').textContent = formatRub(netWage);
+
+      document.getElementById('paybackMonths').textContent = months + ' мес.';
+      document.getElementById('totalWorkersReplaced').textContent = totalWorkers + ' чел.';
+      document.getElementById('monthlySavings').textContent = formatRub(netMonthlySavings);
+      document.getElementById('annualSavings').textContent = (annual / 1000000).toFixed(2) + ' млн ₽';
+      document.getElementById('fiveYearGain').textContent = (fiveYears / 1000000).toFixed(2) + ' млн ₽';
+    }
+
+    window.setPreset = function(type, amount, btn) {
+      document.querySelectorAll('.preset-btn').forEach(function(b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      robotCostInput.value = amount;
+      calculate();
+    };
+
+    [robotCostInput, shiftsInput, workersInput, wageInput].forEach(function(inp) {
+      inp.addEventListener('input', calculate);
+    });
+
+    calculate();
+
+    var burger = document.getElementById('burger');
+    var navLinks = document.getElementById('nav-links');
+    if (burger && navLinks) {
+      burger.addEventListener('click', function () {
+        navLinks.classList.toggle('is-open');
+        burger.classList.toggle('is-active');
+      });
+    }
+  })();
+</script>
+</body>
+</html>

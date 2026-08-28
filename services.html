@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Инжиниринговые услуги — ИТЦ РоботТех</title>
+  <meta name="description" content="Услуги проектирования, пусконаладки, программирования роботов, разработки оснастки и сервисного обслуживания РТК.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .hero-page { padding-top: var(--space-2xl); position: relative; overflow: hidden; }
+    .hero-page-subtitle { font-size: var(--fs-lg); max-width: 680px; color: var(--color-text-secondary); }
+    .service-num { font-family: var(--font-heading); font-size: var(--fs-2xl); font-weight: 700; color: var(--color-accent); margin-bottom: var(--space-sm); }
+    .service-card { display: flex; flex-direction: column; justify-content: space-between; }
+    
+    .nav-cta-mobile { display: none; }
+    .burger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 32px; height: 32px; padding: 0; }
+    .burger span { display: block; width: 100%; height: 2px; background: var(--color-text-primary); border-radius: 2px; transition: transform var(--transition-fast), opacity var(--transition-fast); }
+    .burger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .burger.is-active span:nth-child(2) { opacity: 0; }
+    .burger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 768px) {
+      .burger { display: flex; }
+      .nav-cta-desktop { display: none; }
+      .nav-cta-mobile { display: inline-flex; margin-top: var(--space-md); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo" style="display:flex; align-items:center; gap:10px;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 38px; width: auto;"></a>
+
+    <nav id="nav-links" class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="solutions.html">Решения</a>
+      <a href="services.html" class="active">Услуги</a>
+      <a href="cases.html">Кейсы</a>
+      <a href="calculator.html">Калькулятор ROI</a>
+      <a href="contacts.html">Контакты</a>
+      <a href="contacts.html#wizard" class="btn btn-primary btn-sm nav-cta-mobile">Опросный лист</a>
+    </nav>
+
+    <div class="flex items-center gap-md">
+      <a href="contacts.html#wizard" class="btn btn-primary btn-sm nav-cta-desktop">Опросный лист</a>
+      <button id="burger" class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero-page bg-grid section-sm">
+    <div class="glow-orb" style="width:460px;height:460px;top:-140px;right:-100px;"></div>
+    <div class="container">
+      <div class="reveal is-visible">
+        <span class="eyebrow">Полный цикл интеграции</span>
+        <h1 class="mt-md">Инжиниринговые услуги</h1>
+        <p class="hero-page-subtitle mt-md">
+          Берем на себя все этапы внедрения промышленной робототехники: от предварительного технологического аудита цеха до сервисной поддержки 24/7.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- СЕТКА УСЛУГ -->
+  <section class="section bg-surface">
+    <div class="container">
+      <div class="grid grid-3 reveal-stagger is-visible">
+
+        <div class="card service-card">
+          <div>
+            <div class="service-num">01</div>
+            <h3 class="card-title mb-sm">Технологический аудит</h3>
+            <p class="card-text mb-lg">
+              Выезд инженера на объект, замер габаритов рабочей зоны, анализ существующего техпроцесса и расчет технико-экономического обоснования автоматизации.
+            </p>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Заказать аудит</a>
+        </div>
+
+        <div class="card service-card">
+          <div>
+            <div class="service-num">02</div>
+            <h3 class="card-title mb-sm">3D-моделирование и симуляция</h3>
+            <p class="card-text mb-lg">
+              Построение цифрового двойника ячейки, моделирование траекторий движения манипулятора, проверка на коллизии и точный расчет времени цикла.
+            </p>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Заказать проект</a>
+        </div>
+
+        <div class="card service-card">
+          <div>
+            <div class="service-num">03</div>
+            <h3 class="card-title mb-sm">Проектирование и изготовление оснастки</h3>
+            <p class="card-text mb-lg">
+              Разработка в собственном КБ механических, вакуумных и пневматических захватов, сварочных кондукторов и позиционеров под уникальные заготовки.
+            </p>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Заказать оснастку</a>
+        </div>
+
+        <div class="card service-card">
+          <div>
+            <div class="service-num">04</div>
+            <h3 class="card-title mb-sm">Монтаж и пусконаладка</h3>
+            <p class="card-text mb-lg">
+              Установка механической части, защитных ограждений, датчиков безопасности, прокладка кабельных трасс и стыковка с системами управления цеха (АСУ ТП / PLC).
+            </p>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Узнать сроки ПНР</a>
+        </div>
+
+        <div class="card service-card">
+          <div>
+            <div class="service-num">05</div>
+            <h3 class="card-title mb-sm">Программирование роботов</h3>
+            <p class="card-text mb-lg">
+              Разработка управляющих программ для манипуляторов KUKA (KRL), Fanuc (KAREL/TP), ABB (RAPID), Universal Robots (URScript) и настройка систем технического зрения.
+            </p>
+          </div>
+          <a href="contacts.html#wizard" class="btn btn-outline btn-block">Заказать программирование</a>
+        </div>
+
+        <div class="card service-card">
+          <div>
+            <div class="service-num">06</div>
+            <h3 class="card-title mb-sm">Сервис и ТО 24/7</h3>
+            <p class="card-text mb-lg">
+              Плановое техническое обслуживание (замена масла, калибровка осей, диагностика редукторов), оперативная поставка ЗИП и аварийный выезд инженера.
+            </p>
+          </div>
+          <a href="contacts.html" class="btn btn-outline btn-block">Связаться с сервисом</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer bg-base" style="border-top: 1px solid var(--color-border); padding-block: var(--space-2xl);">
+  <div class="container">
+    <div class="grid grid-4 mb-xl">
+      <div>
+        <a href="index.html" class="nav-logo" style="display: inline-block;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 36px; width: auto;"></a>
+        <p class="text-secondary mt-sm" style="font-size:var(--fs-sm);">
+          Проектирование и ввод в эксплуатацию промышленных робототехнических комплексов.
+        </p>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Разделы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="index.html" class="text-secondary">Главная</a></li>
+          <li class="mb-xs"><a href="solutions.html" class="text-secondary">Отраслевые решения</a></li>
+          <li class="mb-xs"><a href="services.html" class="text-secondary">Услуги</a></li>
+          <li class="mb-xs"><a href="cases.html" class="text-secondary">Кейсы внедрений</a></li>
+          <li class="mb-xs"><a href="calculator.html" class="text-secondary">Калькулятор ROI</a></li>
+          <li class="mb-xs"><a href="contacts.html" class="text-secondary">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Контакты</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="tel:+78001009885" class="text-secondary">+7 (800) 100-98-85</a></li>
+          <li class="mb-xs"><a href="mailto:info@itcrobot.ru" class="text-secondary">info@itcrobot.ru</a></li>
+          <li class="text-secondary">МО, г.Видное, Белокаменное шоссе, 1к1</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Документы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="#" class="text-secondary">Политика конфиденциальности</a></li>
+          <li class="text-secondary">ООО «ИТЦ РоботТех»</li>
+        </ul>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="flex justify-between items-center flex-wrap gap-md mt-md">
+      <span class="text-muted" style="font-size:var(--fs-xs);">© 2026 ИТЦ РоботТех. Все права защищены.</span>
+      <span class="badge badge--success badge--live">Система онлайн</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var burger = document.getElementById('burger');
+    var navLinks = document.getElementById('nav-links');
+    if (burger && navLinks) {
+      burger.addEventListener('click', function () {
+        var isOpen = navLinks.classList.toggle('is-open');
+        burger.classList.toggle('is-active', isOpen);
+      });
+    }
+  })();
+</script>
+</body>
+</html>

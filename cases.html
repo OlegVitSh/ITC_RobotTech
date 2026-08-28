@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Реализованные кейсы внедрения роботов — ИТЦ РоботТех</title>
+  <meta name="description" content="Реальные показатели экономической эффективности и производительности роботизированных комплексов, внедренных на заводах РФ.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .hero-page { padding-top: var(--space-2xl); position: relative; overflow: hidden; text-align: center; }
+    .hero-page-subtitle { font-size: var(--fs-lg); max-width: 680px; margin-inline: auto; color: var(--color-text-secondary); }
+
+    .filter-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-sm); margin-bottom: var(--space-2xl); }
+    .filter-tab {
+      padding: 0.65rem 1.25rem;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-full);
+      background: transparent;
+      color: var(--color-text-secondary);
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .filter-tab:hover { color: var(--color-text-primary); border-color: var(--color-border-accent); }
+    .filter-tab.is-active { background: var(--color-accent); border-color: var(--color-accent); color: #0f1115; }
+
+    .cases-list { display: flex; flex-direction: column; gap: var(--space-xl); }
+    .case-card {
+      display: grid;
+      grid-template-columns: 1.3fr 0.8fr;
+      gap: var(--space-2xl);
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .case-card { grid-template-columns: 1fr; gap: var(--space-lg); }
+    }
+    .case-card.is-hidden { display: none; }
+
+    .case-metrics-box {
+      background: linear-gradient(150deg, var(--color-bg-elevated-2), var(--color-bg-base));
+      border: 1px solid var(--color-border-accent);
+      border-radius: var(--radius-md);
+      padding: var(--space-xl);
+      text-align: center;
+    }
+    .metric-stat { margin-bottom: var(--space-md); }
+    .metric-stat:last-child { margin-bottom: 0; }
+    .metric-num {
+      font-family: var(--font-heading);
+      font-size: var(--fs-3xl);
+      font-weight: 700;
+      color: var(--color-status-success);
+      line-height: 1.1;
+    }
+    .metric-num.accent { color: var(--color-accent); }
+
+    .specs-list {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      margin-top: var(--space-md);
+    }
+    .specs-list li {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--fs-sm);
+      padding-block: 0.3rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .specs-list li:last-child { border-bottom: none; }
+
+    .nav-cta-mobile { display: none; }
+    .burger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 32px; height: 32px; padding: 0; }
+    .burger span { display: block; width: 100%; height: 2px; background: var(--color-text-primary); border-radius: 2px; transition: transform var(--transition-fast), opacity var(--transition-fast); }
+    .burger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .burger.is-active span:nth-child(2) { opacity: 0; }
+    .burger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 768px) {
+      .burger { display: flex; }
+      .nav-cta-desktop { display: none; }
+      .nav-cta-mobile { display: inline-flex; margin-top: var(--space-md); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo" style="display:flex; align-items:center; gap:10px;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 38px; width: auto;"></a>
+  
+    <nav id="nav-links" class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="solutions.html">Решения</a>
+      <a href="services.html">Услуги</a>
+      <a href="cases.html" class="active">Кейсы</a>
+      <a href="calculator.html">Калькулятор ROI</a>
+      <a href="contacts.html">Контакты</a>
+      <a href="contacts.html#wizard" class="btn btn-primary btn-sm nav-cta-mobile">Опросный лист</a>
+    </nav>
+
+    <div class="flex items-center gap-md">
+      <a href="contacts.html#wizard" class="btn btn-primary btn-sm nav-cta-desktop">Опросный лист</a>
+      <button id="burger" class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero-page bg-grid section-sm">
+    <div class="glow-orb" style="width:480px;height:480px;top:-160px;left:50%;transform:translateX(-50%);"></div>
+    <div class="container">
+      <div class="reveal is-visible">
+        <span class="eyebrow">Реальный опыт</span>
+        <h1 class="mt-md">Кейсы и реализованные проекты</h1>
+        <p class="hero-page-subtitle mt-md">
+          Показатели прироста производительности и сроки окупаемости на реальных заводах машиностроения, химии и пищевой отрасли.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASES SECTION -->
+  <section class="section-sm bg-surface">
+    <div class="container">
+      
+      <!-- Filter Tabs -->
+      <div class="filter-tabs reveal is-visible">
+        <button class="filter-tab is-active" data-cat="all">Все проекты</button>
+        <button class="filter-tab" data-cat="welding">Сварка</button>
+        <button class="filter-tab" data-cat="palletizing">Паллетирование</button>
+        <button class="filter-tab" data-cat="machining">Обслуживание станков</button>
+      </div>
+
+      <!-- Case Cards -->
+      <div class="cases-list reveal-stagger is-visible">
+
+        <!-- Case 1 -->
+        <article class="card case-card" data-cat="welding">
+          <div>
+            <span class="badge badge--accent mb-sm">Сварка • Машиностроение</span>
+            <h2 class="card-title" style="font-size:var(--fs-2xl); margin-top:0.25rem;">Сварка рам прицепов для завода сельхозтехники</h2>
+            <p class="text-secondary mt-sm">
+              <strong>Задача:</strong> Острая нехватка квалифицированных сварщиков НАКС, деформация геометрии рам при ручной дуговой сварке, процент брака составлял 4.8%.
+            </p>
+            <p class="text-secondary mt-xs">
+              <strong>Решение:</strong> Внедрен роботизированный сварочный комплекс на базе <strong>KUKA KR 16</strong> с 2-осевым позиционером грузоподъемностью 2000 кг и адаптивным лазерным трекингом шва.
+            </p>
+            <ul class="specs-list">
+              <li><span class="text-muted">Манипулятор:</span> <strong>KUKA KR 16 + Fronius TPS 500i</strong></li>
+              <li><span class="text-muted">Срок интеграции:</span> <strong>3.5 месяца (под ключ)</strong></li>
+              <li><span class="text-muted">Режим эксплуатации:</span> <strong>3 смены (24/7)</strong></li>
+            </ul>
+          </div>
+          <div class="case-metrics-box">
+            <div class="metric-stat">
+              <div class="metric-num">+280%</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Рост скорости сварки</div>
+            </div>
+            <div class="metric-stat">
+              <div class="metric-num">0.05%</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Брак снижен до минимума</div>
+            </div>
+            <div class="metric-stat">
+              <div class="metric-num accent">9.5 мес.</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Фактическая окупаемость ячейки</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Case 2 -->
+        <article class="card case-card" data-cat="palletizing">
+          <div>
+            <span class="badge badge--accent mb-sm">Паллетирование • Химкомбинат</span>
+            <h2 class="card-title" style="font-size:var(--fs-2xl); margin-top:0.25rem;">Укладка мешков 50 кг со строительными смесями</h2>
+            <p class="text-secondary mt-sm">
+              <strong>Задача:</strong> Высокая текучесть персонала на погрузочном участке, частые повреждения мешков при ручной укладке на поддоны.
+            </p>
+            <p class="text-secondary mt-xs">
+              <strong>Решение:</strong> Высокоскоростной робот-паллетайзер <strong>FANUC M-410iC</strong> со специальным вильчатым захватом, диспенсером поддонов и автоматической обмоткой в стретч-пленку.
+            </p>
+            <ul class="specs-list">
+              <li><span class="text-muted">Манипулятор:</span> <strong>FANUC M-410iC/185 + захват Schmalz</strong></li>
+              <li><span class="text-muted">Производительность:</span> <strong>1 100 мешков / час</strong></li>
+              <li><span class="text-muted">Высвобождено:</span> <strong>6 грузчиков в сутки</strong></li>
+            </ul>
+          </div>
+          <div class="case-metrics-box">
+            <div class="metric-stat">
+              <div class="metric-num">100%</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Исключен тяжелый ручной труд</div>
+            </div>
+            <div class="metric-stat">
+              <div class="metric-num">18 паллет/ч</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Стабильная скорость отгрузки</div>
+            </div>
+            <div class="metric-stat">
+              <div class="metric-num accent">13.0 мес.</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Возврат инвестиций (ROI)</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Case 3 -->
+        <article class="card case-card" data-cat="machining">
+          <div>
+            <span class="badge badge--accent mb-sm">Металлообработка • Станки ЧПУ</span>
+            <h2 class="card-title" style="font-size:var(--fs-2xl); margin-top:0.25rem;">Обслуживание токарно-фрезерного центра коботом</h2>
+            <p class="text-secondary mt-sm">
+              <strong>Задача:</strong> Простой дорогостоящих станков ЧПУ из-за человеческого фактора, брак при неточной установке тяжелых заготовок в патрон.
+            </p>
+            <p class="text-secondary mt-xs">
+              <strong>Решение:</strong> Коллаборативный робот <strong>Universal Robots UR10e</strong> с двойным захватом для быстрой смены детали за один вход в рабочую зону без защитного забора.
+            </p>
+            <ul class="specs-list">
+              <li><span class="text-muted">Оборудование:</span> <strong>UR10e + гриппер OnRobot 2FG7</strong></li>
+              <li><span class="text-muted">Интерфейс:</span> <strong>Связь по Profinet со стойкой ЧПУ Fanuc</strong></li>
+              <li><span class="text-muted">Время цикла:</span> <strong>Смена детали за 7.5 секунд</strong></li>
+            </ul>
+          </div>
+          <div class="case-metrics-box">
+            <div class="metric-stat">
+              <div class="metric-num">+45%</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Коэффициент загрузки станков</div>
+            </div>
+            <div class="metric-stat">
+              <div class="metric-num">0</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Ошибок позиционирования заготовок</div>
+            </div>
+            <div class="metric-stat">
+              <div class="metric-num accent">14.2 мес.</div>
+              <div class="text-muted" style="font-size:var(--fs-xs);">Окупаемость с оснасткой</div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer bg-base" style="border-top: 1px solid var(--color-border); padding-block: var(--space-2xl);">
+  <div class="container">
+    <div class="grid grid-4 mb-xl">
+      <div>
+        <a href="index.html" class="nav-logo" style="display: inline-block;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 36px; width: auto;"></a>
+        <p class="text-secondary mt-sm" style="font-size:var(--fs-sm);">
+          Проектирование и ввод в эксплуатацию промышленных робототехнических комплексов.
+        </p>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Разделы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="index.html" class="text-secondary">Главная</a></li>
+          <li class="mb-xs"><a href="solutions.html" class="text-secondary">Отраслевые решения</a></li>
+          <li class="mb-xs"><a href="services.html" class="text-secondary">Услуги</a></li>
+          <li class="mb-xs"><a href="cases.html" class="text-secondary">Кейсы внедрений</a></li>
+          <li class="mb-xs"><a href="calculator.html" class="text-secondary">Калькулятор ROI</a></li>
+          <li class="mb-xs"><a href="contacts.html" class="text-secondary">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Контакты</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="tel:+78001009885" class="text-secondary">+7 (800) 100-98-85</a></li>
+          <li class="mb-xs"><a href="mailto:info@itcrobot.ru" class="text-secondary">info@itcrobot.ru</a></li>
+          <li class="text-secondary">МО, г.Видное, Белокаменное шоссе, 1к1</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Документы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="#" class="text-secondary">Политика конфиденциальности</a></li>
+          <li class="text-secondary">ООО «ИТЦ РоботТех»</li>
+        </ul>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="flex justify-between items-center flex-wrap gap-md mt-md">
+      <span class="text-muted" style="font-size:var(--fs-xs);">© 2026 ИТЦ РоботТех. Все права защищены.</span>
+      <span class="badge badge--success badge--live">Система онлайн</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var tabs = document.querySelectorAll('.filter-tab');
+    var cards = document.querySelectorAll('.case-card');
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var cat = tab.getAttribute('data-cat');
+        tabs.forEach(function (t) { t.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+
+        cards.forEach(function (card) {
+          var matches = cat === 'all' || card.getAttribute('data-cat') === cat;
+          card.classList.toggle('is-hidden', !matches);
+        });
+      });
+    });
+
+    var burger = document.getElementById('burger');
+    var navLinks = document.getElementById('nav-links');
+    if (burger && navLinks) {
+      burger.addEventListener('click', function () {
+        navLinks.classList.toggle('is-open');
+        burger.classList.toggle('is-active');
+      });
+    }
+  })();
+</script>
+</body>
+</html>

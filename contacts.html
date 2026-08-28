@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Контакты и опросный лист — ИТЦ РоботТех</title>
+<meta name="description" content="Контакты инжинирингового центра Роботизированных Технологий, демо-зал робототехники и интерактивный опросный лист.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .hero-page { padding-top: var(--space-2xl); overflow: hidden; position: relative; }
+  .hero-page-subtitle { font-size: var(--fs-lg); max-width: 640px; color: var(--color-text-secondary); }
+  .contact-link { font-size: var(--fs-sm); font-weight: 600; color: var(--color-accent); }
+  .contact-phone { color: var(--color-text-primary); font-weight: 600; }
+  .contact-phone:hover { color: var(--color-accent); }
+
+  .wizard { max-width: 820px; margin-inline: auto; padding: var(--space-xl); }
+  .wizard-progress { display: flex; align-items: center; margin-bottom: var(--space-xl); }
+  .wizard-step-indicator { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; flex: 0 0 auto; }
+  .wizard-step-num {
+    width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-heading); font-weight: 700; font-size: var(--fs-sm);
+    background: var(--color-bg-elevated-2); color: var(--color-text-secondary); border: 1px solid var(--color-border-strong);
+  }
+  .wizard-step-label { font-size: var(--fs-xs); color: var(--color-text-muted); }
+  .wizard-step-indicator.is-active .wizard-step-num,
+  .wizard-step-indicator.is-complete .wizard-step-num { background: var(--color-accent); border-color: var(--color-accent); color: #0f1115; }
+  .wizard-step-indicator.is-active .wizard-step-label { color: var(--color-text-primary); }
+
+  .wizard-progress-line { flex: 1 1 auto; height: 2px; background: var(--color-border-strong); margin: 0 0.5rem 1.4rem; position: relative; }
+  .wizard-progress-line span { position: absolute; inset: 0; background: var(--color-accent); width: 0%; transition: width var(--transition-base); }
+
+  .wizard-panel { display: none; border: none; padding: 0; }
+  .wizard-panel.is-active { display: block; }
+  .wizard-panel-title { font-family: var(--font-heading); font-size: var(--fs-xl); font-weight: 600; color: var(--color-text-primary); margin-bottom: var(--space-lg); }
+
+  .process-options { gap: var(--space-md); }
+  .process-option { cursor: pointer; }
+  .process-option input { position: absolute; opacity: 0; pointer-events: none; }
+  .process-option-card {
+    display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-align: center;
+    padding: var(--space-lg) var(--space-md); border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md); color: var(--color-text-secondary); font-size: var(--fs-sm); font-weight: 500;
+  }
+  .process-option input:checked + .process-option-card { border-color: var(--color-accent); color: var(--color-text-primary); background: var(--color-accent-dim); }
+
+  .wizard-nav { display: flex; justify-content: space-between; gap: var(--space-md); border-top: 1px solid var(--color-border); padding-top: var(--space-lg); }
+  .wizard-success { display: none; text-align: center; padding-block: var(--space-lg); }
+  .wizard-success.is-visible { display: block; }
+  .wizard.is-submitted .wizard-progress, .wizard.is-submitted .wizard-panel, .wizard.is-submitted .wizard-nav { display: none; }
+
+  .map-block { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-border); }
+  .map-placeholder {
+    position: relative; aspect-ratio: 21 / 9; background: linear-gradient(160deg, var(--color-bg-elevated), var(--color-bg-base));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .map-pin { color: var(--color-accent); filter: drop-shadow(0 0 16px var(--color-accent-dim)); }
+  .map-info-card {
+    position: absolute; left: var(--space-lg); bottom: var(--space-lg);
+    background: rgba(15, 17, 21, 0.85); backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg);
+  }
+
+  .nav-cta-mobile { display: none; }
+  .burger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 32px; height: 32px; padding: 0; }
+  .burger span { display: block; width: 100%; height: 2px; background: var(--color-text-primary); border-radius: 2px; }
+  .burger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.is-active span:nth-child(2) { opacity: 0; }
+  .burger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  @media (max-width: 768px) {
+    .burger { display: flex; }
+    .nav-cta-desktop { display: none; }
+    .nav-cta-mobile { display: inline-flex; margin-top: var(--space-md); }
+    .wizard { padding: var(--space-md); }
+    .wizard-step-label { display: none; }
+    .map-info-card { left: var(--space-sm); right: var(--space-sm); bottom: var(--space-sm); }
+  }
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo" style="display:flex; align-items:center; gap:10px;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 38px; width: auto;"></a>
+
+    <nav id="nav-links" class="nav-links">
+      <a href="index.html">Главная</a>
+      <a href="solutions.html">Решения</a>
+      <a href="services.html">Услуги</a>
+      <a href="cases.html">Кейсы</a>
+      <a href="calculator.html">Калькулятор ROI</a>
+      <a href="contacts.html" class="active">Контакты</a>
+      <a href="#wizard" class="btn btn-primary btn-sm nav-cta-mobile">Опросный лист</a>
+    </nav>
+
+    <div class="flex items-center gap-md">
+      <a href="#wizard" class="btn btn-primary btn-sm nav-cta-desktop">Опросный лист</a>
+      <button id="burger" class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero-page bg-grid section-sm">
+    <div class="glow-orb" style="width:460px;height:460px;top:-140px;right:-120px;"></div>
+    <div class="container">
+      <div class="reveal is-visible">
+        <span class="eyebrow">Свяжитесь с нами</span>
+        <h1 class="mt-md">Контакты и опросный лист</h1>
+        <p class="hero-page-subtitle mt-md">
+          Приезжайте в демо-зал или заполните опросный лист — подготовим предварительное ТЗ в течение 2 рабочих дней.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- КОНТАКТЫ -->
+  <section class="section-sm">
+    <div class="container">
+      <div class="grid grid-4 reveal-stagger is-visible">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          </div>
+          <h4 class="mb-sm">Инжиниринговый центр</h4>
+          <p class="text-secondary mb-sm">МО, г.Видное, Белокаменное шоссе, 1к1<br>Пн–Пт: 9:00–18:00</p>
+          <a href="#map" class="contact-link">Как добраться →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <h4 class="mb-sm">Демо-зал роботов</h4>
+          <p class="text-secondary mb-sm">Работающие ячейки сварки и паллетирования — визит по записи.</p>
+          <a href="tel:+78001009885" class="contact-link">Записаться на визит →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.6A2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .6 3a2 2 0 01-.5 2.1L8 10a16 16 0 006 6l1.2-1.2a2 2 0 012.1-.5c1 .3 2 .5 3 .6a2 2 0 011.7 2.1z"/></svg>
+          </div>
+          <h4 class="mb-sm">Отдел главного инженера</h4>
+          <p class="text-secondary mb-sm">
+            <a href="tel:+78001009885" class="contact-phone">+7 (800) 100-98-85</a><br>
+            <a href="tel:+74953673277" class="contact-phone">+7 (495) 367-32-77</a>
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="24" height="24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          </div>
+          <h4 class="mb-sm">Email для ТЗ и чертежей</h4>
+          <p class="text-secondary mb-sm"><a href="mailto:info@itcrobot.ru" class="contact-phone">info@itcrobot.ru</a></p>
+          <span class="badge badge--neutral">DWG, PDF, STEP</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIZARD ФОРМА -->
+  <section id="wizard" class="section bg-surface">
+    <div class="container">
+      <div class="section-header section-header--center reveal is-visible">
+        <span class="eyebrow mx-auto">Опросный лист</span>
+        <h2 class="mt-md">Опишите задачу — мы подготовим предварительное решение</h2>
+      </div>
+
+      <form class="card wizard reveal is-visible" id="wizard-form" novalidate>
+        <div class="wizard-progress">
+          <div class="wizard-step-indicator is-active" data-step="1">
+            <span class="wizard-step-num">1</span><span class="wizard-step-label">Процесс</span>
+          </div>
+          <div class="wizard-progress-line"><span></span></div>
+          <div class="wizard-step-indicator" data-step="2">
+            <span class="wizard-step-num">2</span><span class="wizard-step-label">Заготовка</span>
+          </div>
+          <div class="wizard-progress-line"><span></span></div>
+          <div class="wizard-step-indicator" data-step="3">
+            <span class="wizard-step-num">3</span><span class="wizard-step-label">Объем</span>
+          </div>
+          <div class="wizard-progress-line"><span></span></div>
+          <div class="wizard-step-indicator" data-step="4">
+            <span class="wizard-step-num">4</span><span class="wizard-step-label">Контакты</span>
+          </div>
+        </div>
+
+        <!-- Шаг 1 -->
+        <fieldset class="wizard-panel is-active" data-panel="1">
+          <legend class="wizard-panel-title">Какой процесс нужно автоматизировать?</legend>
+          <div class="grid grid-3 process-options">
+            <label class="process-option">
+              <input type="radio" name="process" value="Сварка" checked>
+              <span class="process-option-card">Сварка металлоконструкций</span>
+            </label>
+            <label class="process-option">
+              <input type="radio" name="process" value="Паллетирование">
+              <span class="process-option-card">Укладка / паллетирование</span>
+            </label>
+            <label class="process-option">
+              <input type="radio" name="process" value="Станки">
+              <span class="process-option-card">Обслуживание станков ЧПУ</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Шаг 2 -->
+        <fieldset class="wizard-panel" data-panel="2">
+          <legend class="wizard-panel-title">Параметры заготовки или груза</legend>
+          <div class="grid grid-3 mb-md">
+            <div class="form-group">
+              <label class="form-label">Длина, мм</label>
+              <input type="number" class="form-control" placeholder="600">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ширина, мм</label>
+              <input type="number" class="form-control" placeholder="400">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Высота, мм</label>
+              <input type="number" class="form-control" placeholder="300">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Масса груза, кг</label>
+            <input type="number" class="form-control" placeholder="25">
+          </div>
+        </fieldset>
+
+        <!-- Шаг 3 -->
+        <fieldset class="wizard-panel" data-panel="3">
+          <legend class="wizard-panel-title">Требуемая производительность</legend>
+          <div class="grid grid-2 mb-md">
+            <div class="form-group">
+              <label class="form-label">Циклов в минуту</label>
+              <input type="number" class="form-control" placeholder="6">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Деталей за смену</label>
+              <input type="number" class="form-control" placeholder="1200">
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Шаг 4 -->
+        <fieldset class="wizard-panel" data-panel="4">
+          <legend class="wizard-panel-title">Контактные данные</legend>
+          <div class="grid grid-2 mb-md">
+            <div class="form-group">
+              <label class="form-label">Имя и должность *</label>
+              <input type="text" class="form-control" placeholder="Иван, главный инженер" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Название предприятия</label>
+              <input type="text" class="form-control" placeholder="ООО Завод">
+            </div>
+          </div>
+          <div class="grid grid-2 mb-md">
+            <div class="form-group">
+              <label class="form-label">Телефон *</label>
+              <input type="tel" class="form-control" placeholder="+7 (___) ___-__-__" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email *</label>
+              <input type="email" class="form-control" placeholder="mail@company.ru" required>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="wizard-nav mt-lg">
+          <button type="button" class="btn btn-outline" id="wizard-prev" disabled>← Назад</button>
+          <button type="button" class="btn btn-primary" id="wizard-next">Далее →</button>
+          <button type="submit" class="btn btn-primary" id="wizard-submit" hidden>Отправить опросный лист</button>
+        </div>
+
+        <div class="wizard-success" id="wizard-success" hidden>
+          <span class="badge badge--success mb-md">Заявка принята</span>
+          <h3>Опросный лист отправлен!</h3>
+          <p class="text-secondary mt-sm">Инженер свяжется с вами в течение 2 рабочих дней с расчетом.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+<!-- КАРТА -->
+  <section id="map" class="section">
+    <div class="container">
+      <div class="section-header reveal is-visible">
+        <span class="eyebrow">Как нас найти</span>
+        <h2 class="mt-md">ООО "ИТЦ РоботТех"</h2>
+      </div>
+      <div class="map-block reveal is-visible" style="border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-border);">
+        <iframe 
+          src="https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=117925278018" 
+          width="100%" 
+          height="420" 
+          frameborder="0" 
+          style="display: block; border: none; filter: invert(90%) hue-rotate(180deg);" 
+          allowfullscreen="true">
+        </iframe>
+      </div>
+    </div>
+  </section>
+         
+ </main>
+
+<!-- FOOTER -->
+<footer class="footer bg-base" style="border-top: 1px solid var(--color-border); padding-block: var(--space-2xl);">
+  <div class="container">
+    <div class="grid grid-4 mb-xl">
+      <div>
+        <a href="index.html" class="nav-logo" style="display: inline-block;">
+  <img src="images/logo.png" alt="ИТЦ РоботТех" style="height: 36px; width: auto;"></a>
+        <p class="text-secondary mt-sm" style="font-size:var(--fs-sm);">
+          Проектирование и ввод в эксплуатацию промышленных робототехнических комплексов.
+        </p>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Разделы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="index.html" class="text-secondary">Главная</a></li>
+          <li class="mb-xs"><a href="solutions.html" class="text-secondary">Отраслевые решения</a></li>
+          <li class="mb-xs"><a href="services.html" class="text-secondary">Услуги</a></li>
+          <li class="mb-xs"><a href="cases.html" class="text-secondary">Кейсы внедрений</a></li>
+          <li class="mb-xs"><a href="calculator.html" class="text-secondary">Калькулятор ROI</a></li>
+          <li class="mb-xs"><a href="contacts.html" class="text-secondary">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Контакты</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="tel:+78001009885" class="text-secondary">+7 (800) 100-98-85</a></li>
+          <li class="mb-xs"><a href="mailto:info@itcrobot.ru" class="text-secondary">info@itcrobot.ru</a></li>
+          <li class="text-secondary">МО, г.Видное, Белокаменное шоссе, 1к1</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mb-md" style="font-size:var(--fs-base);">Документы</h4>
+        <ul style="font-size:var(--fs-sm);">
+          <li class="mb-xs"><a href="#" class="text-secondary">Политика конфиденциальности</a></li>
+          <li class="text-secondary">ООО «ИТЦ РоботТех»</li>
+        </ul>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="flex justify-between items-center flex-wrap gap-md mt-md">
+      <span class="text-muted" style="font-size:var(--fs-xs);">© 2026 ИТЦ РоботТех. Все права защищены.</span>
+      <span class="badge badge--success badge--live">Система онлайн</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var wizardForm = document.getElementById('wizard-form');
+  var panels = wizardForm.querySelectorAll('.wizard-panel');
+  var stepIndicators = wizardForm.querySelectorAll('.wizard-step-indicator');
+  var progressLines = wizardForm.querySelectorAll('.wizard-progress-line span');
+  var prevBtn = document.getElementById('wizard-prev');
+  var nextBtn = document.getElementById('wizard-next');
+  var submitBtn = document.getElementById('wizard-submit');
+  var successBlock = document.getElementById('wizard-success');
+  var currentStep = 1;
+
+  function renderStep() {
+    panels.forEach(function (panel) {
+      panel.classList.toggle('is-active', parseInt(panel.getAttribute('data-panel')) === currentStep);
+    });
+    stepIndicators.forEach(function (indicator) {
+      var s = parseInt(indicator.getAttribute('data-step'));
+      indicator.classList.toggle('is-active', s === currentStep);
+      indicator.classList.toggle('is-complete', s < currentStep);
+    });
+    progressLines.forEach(function (line, i) {
+      line.style.width = (i < currentStep - 1) ? '100%' : '0%';
+    });
+    prevBtn.disabled = currentStep === 1;
+    nextBtn.hidden = currentStep === panels.length;
+    submitBtn.hidden = currentStep !== panels.length;
+  }
+
+  prevBtn.addEventListener('click', function () {
+    if (currentStep > 1) { currentStep--; renderStep(); }
+  });
+
+  nextBtn.addEventListener('click', function () {
+    if (currentStep < panels.length) { currentStep++; renderStep(); }
+  });
+
+  wizardForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    wizardForm.classList.add('is-submitted');
+    successBlock.hidden = false;
+    successBlock.classList.add('is-visible');
+  });
+
+  var burger = document.getElementById('burger');
+  var navLinks = document.getElementById('nav-links');
+  if (burger && navLinks) {
+    burger.addEventListener('click', function () {
+      navLinks.classList.toggle('is-open');
+      burger.classList.toggle('is-active');
+    });
+  }
+})();
+</script>
+</body>
+</html>
